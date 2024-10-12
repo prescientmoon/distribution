@@ -10,29 +10,20 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        inherit (pkgs) nodejs lib;
+        inherit (pkgs) lib;
       in
       rec {
         packages.default = packages.distribution;
         packages.distribution = pkgs.buildNpmPackage.override { stdenv = pkgs.stdenvNoCC; } {
           name = "distribution";
 
-          buildInputs = [
-            nodejs
-            pkgs.gzip
-          ];
+          buildInputs = [ pkgs.nodejs ];
 
           src = lib.cleanSource ./.;
-          npmDepsHash = "";
+          npmDepsHash = "sha256-OiYiLcp9bmFyBK38Xh6nK1XGgILUjcVtD+vxb41i/wU=";
 
           postBuild = ''
-            # Github pages requires an additional 404.html file
-            cp dist/{index,404}.html
-
-            # -k = keeps the original files in place
-            # -r = recursive
-            # -9 = best compression
-            gzip -kr9 dist
+            cp dist/{index,404}.html # Github pages requires an additional 404.html file
           '';
 
           installPhase = ''
@@ -40,8 +31,6 @@
             cp -r dist $out/www
           '';
         };
-
-        devShells.default = pkgs.mkShell { packages = [ nodejs ]; };
       }
     );
 }
