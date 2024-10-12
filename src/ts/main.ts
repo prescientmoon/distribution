@@ -1,7 +1,7 @@
 enum CellType {
   frozen,
   full,
-  empty
+  empty,
 }
 
 type Cell = CellType;
@@ -14,7 +14,7 @@ type Layout = {
 
 const withContextSave = (
   context: CanvasRenderingContext2D,
-  callback: () => void
+  callback: () => void,
 ) => {
   context.save();
   callback();
@@ -26,9 +26,9 @@ const loadAudio = (path: string) => {
 
   return [
     audio,
-    new Promise(resolve => {
+    new Promise((resolve) => {
       audio.onload = resolve;
-    })
+    }),
   ] as const;
 };
 
@@ -39,22 +39,22 @@ const loadImage = (w: number, h: number, url: string) => {
 
   return [
     img,
-    new Promise(resolve => {
+    new Promise((resolve) => {
       img.onload = resolve;
-    })
+    }),
   ] as const;
 };
 
 const [snow, snowLoaded] = loadImage(
   256,
   256,
-  require("../../assets/snow.png")
+  require("../../assets/snow.png"),
 );
 
 const [present, presentLoaded] = loadImage(
   16,
   16,
-  require("../../assets/present.png")
+  require("../../assets/present.png"),
 );
 
 const [music, _] = loadAudio(require("../../assets/audio.mp3"));
@@ -78,7 +78,7 @@ const generateLayout = (probability = 3): Layout => {
         const v = random(10);
 
         return v <= probability ? CellType.empty : CellType.frozen;
-      })
+      }),
   };
 
   if (completedLayout(result)) {
@@ -89,7 +89,7 @@ const generateLayout = (probability = 3): Layout => {
 };
 
 const wait = (amount: number) =>
-  new Promise(resolve => setTimeout(resolve, amount));
+  new Promise((resolve) => setTimeout(resolve, amount));
 
 const drawTile = (
   _type: CellType,
@@ -97,7 +97,7 @@ const drawTile = (
   x: number,
   y: number,
   width: number,
-  height: number
+  height: number,
 ) => {
   if (_type === CellType.frozen) {
     context.drawImage(snow, 32, 0, 32, 32, x, y, width, height);
@@ -166,7 +166,7 @@ export const main = async () => {
     withContextSave(context, () => {
       context.translate(
         Math.round((tilesFitting[0] - layout.width) / 2) * side,
-        Math.round((tilesFitting[1] - layout.height) / 2) * side
+        Math.round((tilesFitting[1] - layout.height) / 2) * side,
       );
 
       for (let index = 0; index < layout.cells.length; index++) {
@@ -193,8 +193,8 @@ export const main = async () => {
       CellType.empty,
       CellType.frozen,
       CellType.empty,
-      CellType.frozen
-    ]
+      CellType.frozen,
+    ],
   };
 
   const resolveState = async () => {
@@ -313,7 +313,7 @@ export const main = async () => {
 
     const [x, y] = [
       e.clientX - Math.round((tilesFitting[0] - layout.width) / 2) * side,
-      e.clientY - Math.round((tilesFitting[1] - layout.height) / 2) * side
+      e.clientY - Math.round((tilesFitting[1] - layout.height) / 2) * side,
     ];
 
     const [cx, cy] = [x / side, y / side].map(Math.floor);
@@ -321,8 +321,8 @@ export const main = async () => {
     const newLayout = {
       ...layout,
       cells: layout.cells.map((v, i) =>
-        mouseIndex === i && v === CellType.empty ? CellType.full : v
-      )
+        mouseIndex === i && v === CellType.empty ? CellType.full : v,
+      ),
     };
 
     base = newLayout;
@@ -334,13 +334,13 @@ export const main = async () => {
     mouseDown = false;
   });
 
-  canvas.addEventListener("mousedown", e => {
+  canvas.addEventListener("mousedown", (e) => {
     mouseDown = true;
 
     doTurn(e);
   });
 
-  canvas.addEventListener("mousemove", e => {
+  canvas.addEventListener("mousemove", (e) => {
     if (mouseDown) {
       doTurn(e);
     }

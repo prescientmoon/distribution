@@ -29,7 +29,9 @@ html {
 .end {
   opacity: 0;
   visibility: hidden;
-  filter: visibility 1s, opacity 1s;
+  filter:
+    visibility 1s,
+    opacity 1s;
 }
 
 #end {
